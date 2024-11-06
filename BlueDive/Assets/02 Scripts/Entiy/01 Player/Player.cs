@@ -12,8 +12,6 @@ public class Player : MonoBehaviour
     public PlayerStat playerStat { get; private set; }
     private PlayerController playerController;
 
-    private Rigidbody2D rb;
-
     private void Awake()
     {
         if(Instance == null)
@@ -28,11 +26,16 @@ public class Player : MonoBehaviour
         }
 
         playerStat = new PlayerStat();
-        rb = GetComponent<Rigidbody2D>();
     }
 
     public void MoveToGrabPosition(Vector2 targetPosition)
     {
+
+    }
+
+    public void Dead()
+    {
+        
 
     }
 

@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     private Player player;
+    private PlayerActionControls actions;
     private InputActionMap m_Player;
 
     private InputAction m_Player_hookGrab;
@@ -19,8 +20,10 @@ public class PlayerController : MonoBehaviour
     {
         player = GetComponent<Player>();
 
+        actions = new PlayerActionControls(GetComponent<Rigidbody2D>(), player.playerStat);
+
         PlayerInput playerInput = GetComponent<PlayerInput>();
-        m_Player = playerInput.actions.FindActionMap("PlayerControls");
+        m_Player = playerInput?.actions.FindActionMap("PlayerControls");
 
         if (m_Player != null)
         {
@@ -51,10 +54,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // HookGrab 
+    #region HOOKGRAB INPUT
     public void OnHookGrabStarted(InputAction.CallbackContext context)
     {
         Debug.Log("HookGrab started");
+
     }
     public void OnHookGrabPerformed(InputAction.CallbackContext context)
     {
@@ -64,8 +68,9 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("HookGrab canceled");
     }
+    #endregion 
 
-    // HookAttack 
+    #region HOOKATTACK INPUT 
     public void OnHookAttackStarted(InputAction.CallbackContext context)
     {
         Debug.Log("HookAttack started");
@@ -78,11 +83,13 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("HookAttack canceled");
     }
+    #endregion
 
-
-    // OnJump
+    #region JUNP INPUT
     public void OnJumpStarted(InputAction.CallbackContext context)
     {
+        Debug.Log("Jump Started");
+        actions.PerformHoverJump();
 
     }
     public void OnJumpPerformed(InputAction.CallbackContext context)
@@ -93,8 +100,9 @@ public class PlayerController : MonoBehaviour
     {
 
     }
+    #endregion
 
-    //OnInteract
+    #region INTERACTT INPUT 
     public void OnInteractStarted(InputAction.CallbackContext context)
     {
 
@@ -107,6 +115,7 @@ public class PlayerController : MonoBehaviour
     {
 
     }
+    #endregion
 
 
     private void OnEnable()
