@@ -15,18 +15,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "HookAttack",
+                    "name": "HookReterieve",
                     "type": "Button",
                     "id": "53ec917c-afba-4490-9c1a-6b7ec8e3f036",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Jump",
-                    "type": "Button",
-                    "id": "5b0fbc62-a1ba-4b27-8a3d-14b9b827a1f0",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -40,6 +31,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SideMove",
+                    "type": "Value",
+                    "id": "2b9ad047-779e-44c3-b20b-2e64edc50a31",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -61,18 +61,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Desktop",
-                    "action": "HookAttack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d52121af-0b83-40bb-8422-71c403df1e7d",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Desktop",
-                    "action": "Jump",
+                    "action": "HookReterieve",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -86,6 +75,39 @@
                     "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "a21d7e72-9ab8-4ce5-a3ba-9659a9963b10",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SideMove",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "left",
+                    "id": "f4e57cf2-857c-4bbc-be4e-69983f308b87",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SideMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "ca97fded-cc2f-4eed-9a2a-9f07917e70f1",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SideMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }

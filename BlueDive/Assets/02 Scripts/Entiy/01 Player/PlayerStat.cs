@@ -8,67 +8,65 @@ public class PlayerStat
 
 
     private readonly int maxHp = 5;
-    private readonly int maxStamina = 30;
+    private readonly float maxStamina = 50.0f;
     private readonly float maxGravity = 9.8f;
     private readonly float minGravity = -9.8f;
-    private readonly float jumpForce = 2f;
+    // private readonly float jumpForce = 2f;
     private readonly float maxSpeed = 5f;
+    private readonly float maxHookMoveSpeed = 4f;
 
     private int currentHP;
-    private int currentStamina;
+    private float currentStamina;
     private float currentGravity;
-    private float currentJumpForce;
+    // private float currentJumpForce;
     private float currentSpeed;
+    private float currentHookMoveSpeed;
 
 
-    public PlayerStat()
-    {
-        InitializeStat();
-    }
+    public PlayerStat() => InitializeStat();
 
     public void InitializeStat()
     {
         currentHP = maxHp;
         currentStamina = maxStamina;
         currentGravity = maxGravity;
-        currentJumpForce = jumpForce;
+        // currentJumpForce = jumpForce;
         currentSpeed = maxSpeed;
+        currentHookMoveSpeed = maxHookMoveSpeed;
     }
 
     public int CurrentHP => currentHP;
-    public int CurrentStamina => currentStamina;
+    public float CurrentStamina => currentStamina;
     public float CurrentGravity => currentGravity;
 
-    public float CurrentJumpForce => currentJumpForce;
+    // public float CurrentJumpForce => currentJumpForce;
     public float CurrentSpeed => currentSpeed;
+    public float CurrentHookMoveSpeed => currentHookMoveSpeed;
 
 
     #region HP 스탯 관련 
     public void TakeDamage(int damage)
     {
-        currentHP -= damage;
-        if (currentHP <= 0) currentHP = 0;
+        Mathf.Max(currentHP - damage, 0);
     }
 
     public void RecoverHP(int amount)
     {
-        currentHP += amount;
-        if(currentHP >= maxHp) currentHP = maxHp;
+        Mathf.Min(currentHP + amount, maxHp);
     }
     #endregion
 
     #region 스태미나 스탯 관련 
 
-    public void ConsumeStamina(int amount)
+    public void ConsumeStamina(float amount)
     {
         currentStamina = Mathf.Max(CurrentStamina - amount, 0);
 
     }
-    public void RecoverStamina(int amount)
+    public void RecoverStamina(float amount)
     {
         currentStamina = Mathf.Min(currentStamina + amount, maxStamina);
     }
-
 
     #endregion
 
