@@ -23,6 +23,7 @@ public class HookController : MonoBehaviour
     [SerializeField] private Vector2 limiteScreenVector2;       // 스크린 화면 확장 범위 
 
     private IHookState currentHookState;
+    private Vector2 direction;
     private Vector2 hookTargetPosition;
     private bool isWallDetected;
     public bool IsMoving { get; private set; }
@@ -65,41 +66,35 @@ public class HookController : MonoBehaviour
 
     public bool SetHookTarget(Vector2 targetPosition)
     {
+        
         Vector2 direction = targetPosition - (Vector2)transform.position;
 
+        // Raycast로 목표 지점 확인
         RaycastHit2D hit = Physics2D.Raycast(
-           transform.position,
-           direction.normalized,
-           limitDistance,
-           GrappleLayer | UnGrappleLayer
+            transform.position,
+            direction.normalized,
+            Mathf.Infinity, // 최대거리
+            GrappleLayer // 후크가 걸릴 수 있는 레이어만 탐색
         );
 
         if (hit.collider != null)
         {
-            if (((1 << hit.collider.gameObject.layer) & GrappleLayer) != 0)
-            {
-                hookTargetPosition = hit.point;
-                return true;
-            }
-            else if (((1 << hit.collider.gameObject.layer) & UnGrappleLayer) != 0)
-            {
-                Debug.LogWarning("Hook cannot grapple to this object!");
-                return false;
-            }
+            hookTargetPosition = hit.point;
+            Debug.Log($"Hook target set at: {hookTargetPosition}");
+            return true;
         }
-        Debug.LogWarning("No valid target found for hook.");
+
         return false;
-
     }
+    public bool IsIdleState() { return currentHookState is HookIdleState; }
 
 
-    public void DrawRopeLine(Vector2 playerPos)
+    public void DrawRopeLine(Vector2 hookVector)
     {
         Vector2 playerPosition = transform.position;
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        ropeLineRenderer.SetPosition(0, playerPos);
-        ropeLineRenderer.SetPosition(1, hookObject.transform.position);
+        ropeLineRenderer.SetPosition(0, playerPosition);
+        ropeLineRenderer.SetPosition(1, GetHookTargetPos());
     }
 
     public void AnchorHook(Vector2 _position)
@@ -129,6 +124,7 @@ public class HookController : MonoBehaviour
 
         hookObject.SetActive(false);
         ropeLineRenderer.enabled = false;
+        
         IsMoving = false;
         ChangeState(new HookIdleState() );
         // StopPlayerHookMove();
@@ -138,7 +134,7 @@ public class HookController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Wall"))
+        if (((1 << collision.gameObject.layer) & GrappleLayer) != 0)
         {
             isWallDetected = true;
             ResetHook();

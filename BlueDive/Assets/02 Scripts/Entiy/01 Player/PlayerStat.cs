@@ -29,7 +29,7 @@ public class PlayerStat
     {
         currentHP = maxHp;
         currentStamina = maxStamina;
-        currentGravity = maxGravity;
+        currentGravity = 1f;
         // currentJumpForce = jumpForce;
         currentSpeed = maxSpeed;
         currentHookMoveSpeed = maxHookMoveSpeed;
@@ -74,6 +74,11 @@ public class PlayerStat
     public void ToggleGravity()
     {
         currentGravity = currentGravity == maxGravity ? minGravity : maxGravity; 
+    }
+
+    public void SetGravity(float value)
+    {
+        currentGravity = value;
     }
 
 }

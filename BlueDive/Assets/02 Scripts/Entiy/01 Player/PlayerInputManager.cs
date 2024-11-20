@@ -32,7 +32,9 @@ public class PlayerInputManager : MonoBehaviour
         if (m_PlayerControls != null)
         {
             m_Player_HookGrab = m_PlayerControls.FindAction("HookGrab", true);
+            m_Player_HookGrab.started += OnHookGrabStarted;
             m_Player_HookGrab.performed += OnHookGrabPerformed;
+            m_Player_HookGrab.canceled += OnHookGrabCanceld;
 
 
             m_Player_HookReterieve = m_PlayerControls.FindAction("HookReterieve", true);
@@ -53,19 +55,26 @@ public class PlayerInputManager : MonoBehaviour
     }
 
     #region HOOKGRAB INPUT
+    public void OnHookGrabStarted(InputAction.CallbackContext context)
+    {
+
+    }
     public void OnHookGrabPerformed(InputAction.CallbackContext context)
     {
-        Debug.Log("Left Mouse: Hook Grab Performed");
+        
+
+    }
+    public void OnHookGrabCanceld(InputAction.CallbackContext context)
+    {
+        if (!hookController.IsIdleState())
+        {
+            return;
+        }
 
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-
         if (hookController.SetHookTarget(mousePosition))
         {
             hookController.ChangeState(new HookShootingState());
-        }
-        else
-        {
-            Debug.LogWarning("Cannot hook to the target.");
         }
     }
     #endregion 
@@ -73,9 +82,12 @@ public class PlayerInputManager : MonoBehaviour
     #region HOOKRETERIEVE INPUT 
     public void OnHookReterievePerformed(InputAction.CallbackContext context)
     {
-        Debug.Log("Right Mouse: Hook Retrieve Performed");
+        if(hookController.IsMoving)
+        {
+            Debug.Log("Right Mouse: Hook Retrieve Performed");
 
-        hookController.ChangeState(new HookRetrieveState());
+            hookController.ChangeState(new HookRetrieveState());
+        }
     }
 
     #endregion
