@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions.Comparers;
 
@@ -24,10 +25,11 @@ public class Player : MonoBehaviour
     [SerializeField] private bool isGrounded;
     private float moveDirection;
 
-    // Stamina
-    [SerializeField] private static float staminaDrainInterval = 1;
-    [SerializeField] private float consumeValue = 0.5f;
-    private Coroutine staminaDrainCoroutine;
+    [Tooltip("HP")]
+    [SerializeField] private PlayerHpGauge playerHPGauge;
+    [SerializeField] private float HPDrainInterval = 1;
+    [SerializeField] private int HPconsumeValue = 1;
+    private Coroutine HpDrainCoroutine;
 
 
 
@@ -48,14 +50,17 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         playerInputManager = GetComponent<PlayerInputManager>();
         hookController = GetComponent<HookController>();
+        playerHPGauge = FindObjectOfType<PlayerHpGauge>();
 
         groundCheck = transform.Find("GroundCheck");
-        if (groundCheck == null) Debug.Log("GroundCheck ChildObject Missing!");
-
         detectObject = transform.Find("DetectObject");
 
     }
-
+    private void Start()
+    {
+        // UpdateHPGauge();
+        StartHpDrain();
+    }
     private void Update()
     {
         if(groundCheck != null)
@@ -71,9 +76,21 @@ public class Player : MonoBehaviour
         HandleSideMovement();
     }
 
+    public void SetGravity(float value)
+    {
+        playerStat.CurrentGravity = value;
+
+        // Rigidbody2D에 중력 값 적용
+        if (rb != null)
+        {
+            rb.gravityScale = playerStat.CurrentGravity;
+            
+        }
+    }
+
     private void HandleSideMovement()
     {
-        if (isGrounded && !hookController.IsMoving)
+        if (isGrounded && !hookController.IsHookMoving)
         {
             float speed = playerStat.CurrentSpeed;
             rb.velocity = new Vector2(moveDirection * speed, rb.velocity.y);
@@ -87,8 +104,9 @@ public class Player : MonoBehaviour
 
     }
 
-    public void SetMoveDirection(float direction)
+    public void SetMoveDirection(float direction )
     {
+        Debug.Log("SetMoveDirection ");
         moveDirection = direction;
     }
 
@@ -99,19 +117,35 @@ public class Player : MonoBehaviour
         rb.velocity = direction * playerStat.CurrentHookMoveSpeed;
     }
 
-    private void StartStaminaDrain()
+    private void UpdateHPGauge()
     {
-        if (staminaDrainCoroutine == null)
+        if (playerHPGauge != null)
         {
-            staminaDrainCoroutine = StartCoroutine(ApplyStaminaDrain());
+            playerHPGauge.UpdateGauge(playerStat.CurrentHP, playerStat.MaxHP);
         }
     }
-    private IEnumerator ApplyStaminaDrain()
+    private void StartHpDrain()
+    {
+        if (HpDrainCoroutine == null)
+        {
+            HpDrainCoroutine = StartCoroutine(ApplyHpDrain());
+        }
+    }
+    private IEnumerator ApplyHpDrain()
     {
         while(true)
         {
-            yield return YieldCache.WaitForSeconds(staminaDrainInterval);
-            playerStat.ConsumeStamina(consumeValue);
+            yield return YieldCache.WaitForSeconds(HPDrainInterval);
+            playerStat.ConsumeHP(HPconsumeValue);
+
+            UpdateHPGauge();
+
+            if (playerStat.CurrentHP <= 0)
+            {
+                StopCoroutine(HpDrainCoroutine);
+                Dead();
+                yield break; // HP가 0이 되면 코루틴 종료
+            }
 
         }
     }
@@ -124,15 +158,15 @@ public class Player : MonoBehaviour
 
     private void OnEnable()
     {
-        //  StartStaminaDrain();
+        
     }
 
     private void OnDisable()
     {
-        if(staminaDrainCoroutine != null)
+        if(HpDrainCoroutine != null)
         {
-            StopCoroutine(staminaDrainCoroutine);
-            staminaDrainCoroutine = null;
+            StopCoroutine(HpDrainCoroutine);
+            HpDrainCoroutine = null;
         }
     }
 

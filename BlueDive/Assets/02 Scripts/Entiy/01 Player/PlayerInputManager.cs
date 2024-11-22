@@ -18,7 +18,7 @@ public class PlayerInputManager : MonoBehaviour
     private InputAction m_Player_Interact;
     private InputAction m_Player_SideMove;
 
-    private float moveDirection;
+    [SerializeField] private float moveDirection;
 
     private void Awake()
     {
@@ -33,7 +33,7 @@ public class PlayerInputManager : MonoBehaviour
         {
             m_Player_HookGrab = m_PlayerControls.FindAction("HookGrab", true);
             m_Player_HookGrab.started += OnHookGrabStarted;
-            m_Player_HookGrab.performed += OnHookGrabPerformed;
+            //m_Player_HookGrab.performed += OnHookGrabPerformed;
             m_Player_HookGrab.canceled += OnHookGrabCanceld;
 
 
@@ -57,7 +57,11 @@ public class PlayerInputManager : MonoBehaviour
     #region HOOKGRAB INPUT
     public void OnHookGrabStarted(InputAction.CallbackContext context)
     {
-
+        if (!hookController.IsIdleState() || !hookController.IsReterieveState() || hookController.IsHookMoving )
+        {
+            return;
+        }
+        hookController.ChangeState(new HookChargingState());
     }
     public void OnHookGrabPerformed(InputAction.CallbackContext context)
     {
@@ -66,11 +70,6 @@ public class PlayerInputManager : MonoBehaviour
     }
     public void OnHookGrabCanceld(InputAction.CallbackContext context)
     {
-        if (!hookController.IsIdleState())
-        {
-            return;
-        }
-
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         if (hookController.SetHookTarget(mousePosition))
         {
@@ -82,7 +81,7 @@ public class PlayerInputManager : MonoBehaviour
     #region HOOKRETERIEVE INPUT 
     public void OnHookReterievePerformed(InputAction.CallbackContext context)
     {
-        if(hookController.IsMoving)
+        if(hookController.IsHookMoving == true)
         {
             Debug.Log("Right Mouse: Hook Retrieve Performed");
 

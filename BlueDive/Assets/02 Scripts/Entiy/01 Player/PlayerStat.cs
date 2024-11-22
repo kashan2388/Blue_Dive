@@ -7,17 +7,19 @@ public class PlayerStat
     public enum StatType { HP, Stamina, Gravity, JumpForce, Speed }
 
 
-    private readonly int maxHp = 5;
+    private readonly int maxHp = 100;
     private readonly float maxStamina = 50.0f;
     private readonly float maxGravity = 9.8f;
     private readonly float minGravity = -9.8f;
     // private readonly float jumpForce = 2f;
     private readonly float maxSpeed = 5f;
-    private readonly float maxHookMoveSpeed = 4f;
+    private readonly float maxHookMoveSpeed = 15f;
 
+    private int maxHP;
     private int currentHP;
     private float currentStamina;
     private float currentGravity;
+    public float defaultGravity = 1f;
     // private float currentJumpForce;
     private float currentSpeed;
     private float currentHookMoveSpeed;
@@ -29,15 +31,20 @@ public class PlayerStat
     {
         currentHP = maxHp;
         currentStamina = maxStamina;
-        currentGravity = 1f;
+        currentGravity = defaultGravity;
         // currentJumpForce = jumpForce;
         currentSpeed = maxSpeed;
         currentHookMoveSpeed = maxHookMoveSpeed;
     }
 
+    public int MaxHP => maxHP;
     public int CurrentHP => currentHP;
     public float CurrentStamina => currentStamina;
-    public float CurrentGravity => currentGravity;
+    public float CurrentGravity
+    {
+        get => currentGravity;
+        set => currentGravity = Mathf.Clamp(value, minGravity, maxGravity);
+    }
 
     // public float CurrentJumpForce => currentJumpForce;
     public float CurrentSpeed => currentSpeed;
@@ -54,18 +61,10 @@ public class PlayerStat
     {
         Mathf.Min(currentHP + amount, maxHp);
     }
-    #endregion
-
-    #region 스태미나 스탯 관련 
-
-    public void ConsumeStamina(float amount)
+    public void ConsumeHP(int amount)
     {
-        currentStamina = Mathf.Max(CurrentStamina - amount, 0);
+        currentHP = Mathf.Max(currentHP - amount, 0);
 
-    }
-    public void RecoverStamina(float amount)
-    {
-        currentStamina = Mathf.Min(currentStamina + amount, maxStamina);
     }
 
     #endregion
@@ -74,11 +73,6 @@ public class PlayerStat
     public void ToggleGravity()
     {
         currentGravity = currentGravity == maxGravity ? minGravity : maxGravity; 
-    }
-
-    public void SetGravity(float value)
-    {
-        currentGravity = value;
     }
 
 }

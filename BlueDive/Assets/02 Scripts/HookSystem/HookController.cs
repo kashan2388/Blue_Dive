@@ -15,7 +15,7 @@ public class HookController : MonoBehaviour
 
     [Header("Hook Values")]
     [SerializeField] public float hookLaunchSpeed = 10f;
-    [SerializeField] public float hookRetrieveSpeed = 10f;
+    [SerializeField] public float hookRetrieveSpeed = 50f;
     [SerializeField] public float limitDistance = 15f;          // 갈고리 거리 제한 
     [SerializeField] public LayerMask GrappleLayer;
     [SerializeField] public LayerMask UnGrappleLayer;
@@ -26,7 +26,7 @@ public class HookController : MonoBehaviour
     private Vector2 direction;
     private Vector2 hookTargetPosition;
     private bool isWallDetected;
-    public bool IsMoving { get; private set; }
+    public bool IsHookMoving { get; private set; } 
     
     public Vector2 GetHookTargetPos() => hookTargetPosition;
     public PlayerStat GetPlayerStat() => playerStat;
@@ -74,19 +74,20 @@ public class HookController : MonoBehaviour
             transform.position,
             direction.normalized,
             Mathf.Infinity, // 최대거리
-            GrappleLayer // 후크가 걸릴 수 있는 레이어만 탐색
+            GrappleLayer 
         );
 
         if (hit.collider != null)
         {
             hookTargetPosition = hit.point;
-            Debug.Log($"Hook target set at: {hookTargetPosition}");
+           
             return true;
         }
 
         return false;
     }
     public bool IsIdleState() { return currentHookState is HookIdleState; }
+    public bool IsReterieveState() { return currentHookState is HookRetrieveState; }
 
 
     public void DrawRopeLine(Vector2 hookVector)
@@ -104,30 +105,31 @@ public class HookController : MonoBehaviour
 
     public void StartPlayerHookMove()
     {
-        IsMoving = true;
+        IsHookMoving = true;
         distanceJoint2D.enabled = true;
     }
     public void StopPlayerHookMove()
     {
-        IsMoving = false;
+        IsHookMoving = false;
         distanceJoint2D.enabled = false;
         ChangeState(new HookIdleState());
     }
 
     public void ResetHook()
     {
-        if (currentHookState is HookIdleState)
-        {
-            Debug.LogWarning("Already in HookIdleState. Reset skipped.");
-            return;
-        }
-
         hookObject.SetActive(false);
         ropeLineRenderer.enabled = false;
         
-        IsMoving = false;
+        IsHookMoving = false;
+        isWallDetected = false;
         ChangeState(new HookIdleState() );
-        // StopPlayerHookMove();
+        StopPlayerHookMove();
+
+        if (IsIdleState())
+        {
+
+            return;
+        }
     }
 
     public bool IsWallDetected() => isWallDetected;
@@ -138,7 +140,6 @@ public class HookController : MonoBehaviour
         {
             isWallDetected = true;
             ResetHook();
-            Debug.Log("벽에 충돌. HookMove 종료");
         }
     }
 
