@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BumpEnemy : MonoBehaviour
 {
-    // 플레이어가 몹과 부딪혔을 때
+    // 플레이어가 몹과 부딪혔을 때 피해를 입히는가?
 
     private void OnTriggerStay2D(Collider2D collision)
     {

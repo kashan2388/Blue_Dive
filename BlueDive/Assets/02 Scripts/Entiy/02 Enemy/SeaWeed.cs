@@ -2,30 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SeaWeed : Enemy
+[RequireComponent(typeof(CircleCollider2D))]
+public class SeaWeed : MonoBehaviour
 {
-    private float pullForce = 1;    // 당기는 힘
-
-    protected override void Start()
+    // 끈끈이 해초
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        base.Start();
-    }
+        Player player = collision.GetComponent<Player>();
 
-    protected override void Update()
-    {
-        base.Update();
-    }
-
-    public override void Stat()
-    {
-        attackRange = 0;
-        attackCoolTime = float.MaxValue;
-    }
-
-    public override void Attack()
-    {
-        Vector2 moveVector = (transform.position - target.position).normalized * pullForce;
-
-        target.GetComponent<Rigidbody2D>().velocity = moveVector;
+        if(player != null)
+        {
+            // 플레이어 속도 감소
+        }
     }
 }

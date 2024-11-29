@@ -5,78 +5,60 @@ using UnityEngine;
 
 public abstract class Enemy : MonoBehaviour
 {
-    [SerializeField] public float attackRange = 0;      // 공격 사거리
-    [SerializeField] public float attackCoolTime = 0;   // 공격 쿨타임
+    public float attackCoolTime = float.MaxValue;   // 공격 쿨타임
 
-    protected Transform target;
-    SpriteRenderer spriteRenderer;
-    // 애니메이션 유무
-    Animator animator;
+    public bool isPlaying = false;      // 활성화 여부
+    private bool isAttack = false;      // 공격 여부
 
-    // 필요 구현
-    // 플레이어 위치에 따른 좌우 반전
-    // 일정 시간마다 공격
+    public Transform target = null;     // 대상 위치
 
-    protected virtual void Start()
+    
+    protected void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
-        target = Player.Instance.transform;
+        CoolTime();
+    }
+    protected void Update()
+    {
+        // 활성화 또는 공격 쿨타임이 되지 않았을 경우 공격x
+        if (!isPlaying || !isAttack)
+            return;
 
-        Stat();
-        StartCoroutine(IEAttack());
+        StartCoroutine(IECoolTime());
+        Attack();
+
     }
 
-    protected virtual void Update()
+    // RangeDetection으로부터 플레이어 위치 받아오기
+    public void TargetTransform(Transform player)
     {
-        target = Player.Instance.transform;
+        target = player;
+    }
 
-        // 플레이어 위치에 따른 좌우 반전
-        if(target.position.x < transform.position.x)
+    // 공격 쿨타임
+    IEnumerator IECoolTime()
+    {
+        isAttack = false;
+        float time = attackCoolTime;
+
+        while (time >= 0)
         {
-            spriteRenderer.flipX = false;
+            time -= Time.deltaTime;
+            yield return null;
         }
-        else
-        {
-            spriteRenderer.flipY = true;
-        }
+
+        isAttack = true;
     }
 
     /// <summary>
-    /// attackRange와 attackCoolTime 값 설정
+    ///  attackCoolTime 값 재정의 할 것
     /// </summary>
-    public abstract void Stat();
+    public abstract void CoolTime();
 
-    IEnumerator IEAttack()
-    {
-        while(true)
-        {
-            if(Vector2.Distance(target.position, transform.position) <= attackRange)
-            {
-                Attack();
 
-                // 공격 후 쿨타임 동안 대기
-                yield return StartCoroutine(IECoolTime());
-            }
-
-            yield return null;
-        }
-    }
 
     /// <summary>
     /// 공격 방법 정의
     /// player.Damage()
     /// </summary>
     public abstract void Attack();
-
-    IEnumerator IECoolTime()
-    {
-        float time = attackCoolTime;
-
-        while(time >= 0)
-        {
-            time -= Time.deltaTime;
-            yield return null;
-        }
-    }
 }

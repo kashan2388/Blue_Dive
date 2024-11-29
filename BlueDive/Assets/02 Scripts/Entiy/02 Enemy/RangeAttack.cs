@@ -4,26 +4,22 @@ using UnityEngine;
 
 public class RangeAttack : Enemy
 {
-    protected override void Start()
-    {
-        base.Start();
-    }
+    // 원거리 공격 몬스터
+    [SerializeField] public float attack;          // 데미지
+    [SerializeField] public float coolTime;        // 공격 쿨타임
+    [SerializeField] public GameObject projectile; // 발사체 프리팹
 
-    protected override void Update()
-    {
-        base.Update();
-    }
-
-    public override void Stat()
-    {
-        attackRange = 0;
-        attackCoolTime = float.MaxValue;
-    }
 
     public override void Attack()
     {
-        // 플레이어에게 공격 애니메이션 및 투사체 발사
-        throw new System.NotImplementedException();
+        //투사체 생성 및 플레이어에게 발사
+        GameObject projectiles = Instantiate(projectile, transform);
+        projectiles.transform.SetParent(transform);
+        projectiles.GetComponent<Bullet>().Shot(target);
     }
 
+    public override void CoolTime()
+    {
+        attackCoolTime = coolTime;
+    }
 }
