@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class Enemy : MonoBehaviour
 {
     protected float attackCoolTime = float.MaxValue;    // 초당 공격 횟수
-    protected bool isPlaying = false;                   // 활성화 여부
+    public bool isPlaying = false;                   // 활성화 여부
     private bool isAttack = true;                       // 공격 여부
     // private bool isAnim = false;                     // 애니메이션 여부
 
