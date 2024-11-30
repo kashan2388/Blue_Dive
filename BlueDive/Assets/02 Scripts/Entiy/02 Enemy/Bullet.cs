@@ -24,11 +24,12 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    public void Shot(Transform target, float damage, float speed)
+    public void Shot(Transform target, float damage, float speed, bool penetrating)
     {
         this.target = target;
         this.damage = damage;
         this.speed = speed;
+        this.penetrating = penetrating;
     }
 
     // 관통여부에 따라 닿을경우 소멸

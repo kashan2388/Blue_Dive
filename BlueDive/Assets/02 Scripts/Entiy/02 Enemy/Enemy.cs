@@ -13,11 +13,11 @@ public abstract class Enemy : MonoBehaviour
     public Transform target = null;                     // 대상 위치
 
     
-    protected void Start()
+    protected virtual void Start()
     {
         CoolTime();
     }
-    protected void Update()
+    protected virtual void Update()
     {
         // 활성화 또는 공격 쿨타임이 되지 않았을 경우 공격x
         if (!isPlaying || !isAttack || target == null)
