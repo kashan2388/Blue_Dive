@@ -5,12 +5,12 @@ using UnityEngine;
 
 public abstract class Enemy : MonoBehaviour
 {
-    public float attackCoolTime = float.MaxValue;   // 공격 쿨타임
+    protected float attackCoolTime = float.MaxValue;    // 초당 공격 횟수
+    protected bool isPlaying = false;                   // 활성화 여부
+    private bool isAttack = true;                       // 공격 여부
+    // private bool isAnim = false;                     // 애니메이션 여부
 
-    public bool isPlaying = false;      // 활성화 여부
-    private bool isAttack = false;      // 공격 여부
-
-    public Transform target = null;     // 대상 위치
+    public Transform target = null;                     // 대상 위치
 
     
     protected void Start()
@@ -20,7 +20,7 @@ public abstract class Enemy : MonoBehaviour
     protected void Update()
     {
         // 활성화 또는 공격 쿨타임이 되지 않았을 경우 공격x
-        if (!isPlaying || !isAttack)
+        if (!isPlaying || !isAttack || target == null)
             return;
 
         StartCoroutine(IECoolTime());
@@ -38,7 +38,7 @@ public abstract class Enemy : MonoBehaviour
     IEnumerator IECoolTime()
     {
         isAttack = false;
-        float time = attackCoolTime;
+        float time = 1.00f / attackCoolTime;
 
         while (time >= 0)
         {

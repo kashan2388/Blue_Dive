@@ -30,6 +30,7 @@ public class RangeDetection : MonoBehaviour
     {
         if (collision.tag == "Player")
         {
+            enemy.TargetTransform(null);
             enemy.isPlaying = false;
         }
     }
