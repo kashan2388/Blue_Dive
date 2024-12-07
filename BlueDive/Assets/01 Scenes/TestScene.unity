@@ -3426,7 +3426,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 273d10cff8d1c2d4c88ba7f453f88759, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveDirection: 0
 --- !u!70 &951266048
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -3501,10 +3500,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59253fd9e5621574aa9578300b38912c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hookObject: {fileID: 1828348003}
-  hookAnchor: {fileID: 964617699}
-  ropeLineRenderer: {fileID: 1132310483}
-  distanceJoint2D: {fileID: 1828348008}
   hookLaunchSpeed: 30
   hookRetrieveSpeed: 100
   limitDistance: 50
@@ -5473,6 +5468,7 @@ GameObject:
   - component: {fileID: 1828348006}
   - component: {fileID: 1828348008}
   - component: {fileID: 1828348007}
+  - component: {fileID: 1828348009}
   m_Layer: 0
   m_Name: Hook
   m_TagString: Untagged
@@ -5644,6 +5640,26 @@ DistanceJoint2D:
   m_AutoConfigureDistance: 1
   m_Distance: 3.88
   m_MaxDistanceOnly: 0
+--- !u!114 &1828348009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1828348003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2d1847c178af0945b20933eb3245f9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isGrappling: 0
+  isUnGrappling: 0
+  callBackGrappleLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  callBackUnGrappleLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &1922286651
 GameObject:
   m_ObjectHideFlags: 0
