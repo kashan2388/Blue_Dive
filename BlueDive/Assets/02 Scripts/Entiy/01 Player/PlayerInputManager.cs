@@ -12,13 +12,10 @@ public class PlayerInputManager : MonoBehaviour
     private PlayerActionControls actions;
     private InputActionMap m_PlayerControls;
 
-    private InputAction m_Player_HookGrab;
-    private InputAction m_Player_HookReterieve;
-    // private InputAction m_Player_Jump;
-    private InputAction m_Player_Interact;
-    private InputAction m_Player_SideMove;
-
-    [SerializeField] private float moveDirection;
+    private InputAction hookGrapAction;
+    private InputAction hookRetriveAction;
+    private InputAction interactAction;
+    private InputAction sideMoveAction;
 
     private void Awake()
     {
@@ -31,43 +28,42 @@ public class PlayerInputManager : MonoBehaviour
 
         if (m_PlayerControls != null)
         {
-            m_Player_HookGrab = m_PlayerControls.FindAction("HookGrab", true);
-            m_Player_HookGrab.started += OnHookGrabStarted;
-            //m_Player_HookGrab.performed += OnHookGrabPerformed;
-            m_Player_HookGrab.canceled += OnHookGrabCanceld;
-
-
-            m_Player_HookReterieve = m_PlayerControls.FindAction("HookReterieve", true);
-            m_Player_HookReterieve.performed += OnHookReterievePerformed;
-
-
-            m_Player_Interact = m_PlayerControls.FindAction("Interact", true);
-            m_Player_Interact.performed += OnInteractPerformed;
-
-
-            m_Player_SideMove = m_PlayerControls.FindAction("SideMove", true);
-            m_Player_SideMove.started += OnSideMoveStarted;
-            m_Player_SideMove.performed += OnSideMovePerformed;
-            m_Player_SideMove.canceled += OnSideMoveCanceld;
-
+            InitializeActions();
         }
-       
+
+    }
+
+    private void InitializeActions()
+    {
+        var hookGrapAction = m_PlayerControls.FindAction("HookGrab", true);
+        hookGrapAction.started += OnHookGrabStarted;
+        hookGrapAction.canceled += OnHookGrabCanceld;
+
+
+        var hookRetriveAction = m_PlayerControls.FindAction("HookReterieve", true);
+        hookRetriveAction.performed += OnHookReterievePerformed;
+
+
+        var interactAction = m_PlayerControls.FindAction("Interact", true);
+        interactAction.performed += OnInteractPerformed;
+
+
+        var sideMoveAction = m_PlayerControls.FindAction("SideMove", true);
+        sideMoveAction.started += OnSideMoveStarted;
+        sideMoveAction.performed += OnSideMovePerformed;
+        sideMoveAction.canceled += OnSideMoveCanceld;
     }
 
     #region HOOKGRAB INPUT
     public void OnHookGrabStarted(InputAction.CallbackContext context)
     {
-        if (!hookController.IsIdleState() || !hookController.IsReterieveState() || hookController.IsHookMoving )
+        if (!hookController.IsIdleState() || hookController.IsReterieveState() || hookController.IsHookMoving)
         {
             return;
         }
         hookController.ChangeState(new HookChargingState());
     }
-    public void OnHookGrabPerformed(InputAction.CallbackContext context)
-    {
-        
 
-    }
     public void OnHookGrabCanceld(InputAction.CallbackContext context)
     {
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
@@ -81,14 +77,26 @@ public class PlayerInputManager : MonoBehaviour
     #region HOOKRETERIEVE INPUT 
     public void OnHookReterievePerformed(InputAction.CallbackContext context)
     {
-        if(hookController.IsHookMoving == true)
+        if (hookController.IsHookMoving == true)
         {
-            Debug.Log("Right Mouse: Hook Retrieve Performed");
-
             hookController.ChangeState(new HookRetrieveState());
         }
     }
+    #endregion
 
+    #region SIDE MOVE 
+    public void OnSideMoveStarted(InputAction.CallbackContext context)
+    {
+    }
+    public void OnSideMovePerformed(InputAction.CallbackContext context)
+    {
+        float moveDirection = context.ReadValue<Vector2>().x; ;
+        player.SetMoveDirection(moveDirection);
+    }
+    public void OnSideMoveCanceld(InputAction.CallbackContext context)
+    {
+        player.SetMoveDirection(0f);
+    }
     #endregion
 
     #region INTERACTT INPUT 
@@ -98,30 +106,13 @@ public class PlayerInputManager : MonoBehaviour
     }
     #endregion
 
-    #region SIDE MOVE 
-    public void OnSideMoveStarted(InputAction.CallbackContext context)
-    {
-        Debug.Log("OnSideMoveStarted");
-    }
-    public void OnSideMovePerformed(InputAction.CallbackContext context)
-    {
-        Vector2 input = context.ReadValue<Vector2>();
-        moveDirection = input.x;
-
-        player.SetMoveDirection(moveDirection);
-    }
-    public void OnSideMoveCanceld(InputAction.CallbackContext context)
-    {
-        player.SetMoveDirection(0f);
-
-    }
-    #endregion
+   
 
     private void OnEnable()
     {
         foreach (var action in actions)
         {
-            if(action != null ) action.Enable();
+            if (action != null) action.Enable();
         }
 
     }

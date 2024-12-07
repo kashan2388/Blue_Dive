@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions.Comparers;
+using UnityEngine.InputSystem.XR;
 
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent (typeof(CapsuleCollider2D))]
+[RequireComponent(typeof(CapsuleCollider2D))]
 [RequireComponent(typeof(PlayerInputManager))]
 public class Player : MonoBehaviour
 {
-    public static Player Instance {  get; private set; }
-
+    public static Player Instance { get; private set; }
     public PlayerStat playerStat { get; private set; }
+
+
     private PlayerInputManager playerInputManager;
     private HookController hookController;
+    private Rigidbody2D rb;
 
     // GroundCheck 
     [SerializeField] private LayerMask groundLayer;
@@ -21,7 +24,6 @@ public class Player : MonoBehaviour
     private Transform detectObject;
     [SerializeField] private float groundCheckRadius = 0.2f;
 
-    private Rigidbody2D rb;
     [SerializeField] private bool isGrounded;
     private float moveDirection;
 
@@ -35,7 +37,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
@@ -48,7 +50,7 @@ public class Player : MonoBehaviour
 
         playerStat = new PlayerStat();
         rb = GetComponent<Rigidbody2D>();
-        playerInputManager = GetComponent<PlayerInputManager>();
+        //playerInputManager = GetComponent<PlayerInputManager>();
         hookController = GetComponent<HookController>();
         playerHPGauge = FindObjectOfType<PlayerHpGauge>();
 
@@ -63,7 +65,7 @@ public class Player : MonoBehaviour
     }
     private void Update()
     {
-        if(groundCheck != null)
+        if (groundCheck != null)
         {
             isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
             Debug.DrawRay(groundCheck.position, Vector3.down * groundCheckRadius, Color.red);
@@ -84,7 +86,7 @@ public class Player : MonoBehaviour
         if (rb != null)
         {
             rb.gravityScale = playerStat.CurrentGravity;
-            
+
         }
     }
 
@@ -104,18 +106,11 @@ public class Player : MonoBehaviour
 
     }
 
-    public void SetMoveDirection(float direction )
+    public void SetMoveDirection(float direction)
     {
-        Debug.Log("SetMoveDirection ");
         moveDirection = direction;
     }
 
-
-    public void MoveToGrabPosition(Vector2 targetPosition)
-    {
-        Vector2 direction = (targetPosition - (Vector2)transform.position).normalized;
-        rb.velocity = direction * playerStat.CurrentHookMoveSpeed;
-    }
 
     private void UpdateHPGauge()
     {
@@ -133,7 +128,7 @@ public class Player : MonoBehaviour
     }
     private IEnumerator ApplyHpDrain()
     {
-        while(true)
+        while (true)
         {
             yield return YieldCache.WaitForSeconds(HPDrainInterval);
             playerStat.ConsumeHP(HPconsumeValue);
@@ -144,7 +139,7 @@ public class Player : MonoBehaviour
             {
                 StopCoroutine(HpDrainCoroutine);
                 Dead();
-                yield break; // HP가 0이 되면 코루틴 종료
+                yield break;
             }
 
         }
@@ -152,18 +147,19 @@ public class Player : MonoBehaviour
 
     public void Dead()
     {
+        // 플레이어 죽음 시 행동 정의 
         Debug.Log("Player Dead");
 
     }
 
     private void OnEnable()
     {
-        
+
     }
 
     private void OnDisable()
     {
-        if(HpDrainCoroutine != null)
+        if (HpDrainCoroutine != null)
         {
             StopCoroutine(HpDrainCoroutine);
             HpDrainCoroutine = null;

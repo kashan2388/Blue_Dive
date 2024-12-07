@@ -22,4 +22,9 @@ public class GameManager : MonoBehaviour
             return;
         }
     }
+
+    private void GameOver()
+    {
+        
+    }
 }
