@@ -6,7 +6,6 @@ public class SelfDestruct : Enemy
 {
     // 기뢰폭
     [SerializeField] public float range = 3.0f;    // 거리
-    [SerializeField] public float damage = 15.0f;  // 데미지
     private WaitForSeconds waitingTime = new WaitForSeconds(3.0f);  // 폭발 대기시간
 
     public override void Attack()
@@ -22,8 +21,7 @@ public class SelfDestruct : Enemy
 
         if (Distance() <= range)
         {
-            // 일정거리 이내일 때 플레이어에게 피해
-            // Player.Instance.Damaga(attack);
+            Damage(damage);
         }
 
         Destroy(this);
@@ -34,10 +32,5 @@ public class SelfDestruct : Enemy
         float distance = Vector2.Distance(Player.Instance.transform.position, transform.position);
 
         return distance;
-    }
-
-    public override void CoolTime()
-    {
-        throw new System.NotImplementedException();
     }
 }

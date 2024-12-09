@@ -5,18 +5,14 @@ using UnityEngine;
 
 public abstract class Enemy : MonoBehaviour
 {
-    protected float attackCoolTime = float.MaxValue;    // 초당 공격 횟수
-    public bool isPlaying = false;                   // 활성화 여부
-    private bool isAttack = true;                       // 공격 여부
-    // private bool isAnim = false;                     // 애니메이션 여부
+    [SerializeField] public float damage = 0;                       // 데미지
+    [SerializeField] public float attackCoolTime = float.MaxValue;  // 초당 공격 횟수
+    [SerializeField] public bool isPlaying = false;                 // 활성화 여부
+    [SerializeField] public bool isAttack = true;                   // 공격 여부
 
-    public Transform target = null;                     // 대상 위치
+    protected Transform target = null;                                 // 대상 위치
 
-    
-    protected virtual void Start()
-    {
-        CoolTime();
-    }
+
     protected virtual void Update()
     {
         // 활성화 또는 공격 쿨타임이 되지 않았을 경우 공격x
@@ -25,7 +21,6 @@ public abstract class Enemy : MonoBehaviour
 
         StartCoroutine(IECoolTime());
         Attack();
-
     }
 
     // RangeDetection으로부터 플레이어 위치 받아오기
@@ -50,15 +45,16 @@ public abstract class Enemy : MonoBehaviour
     }
 
     /// <summary>
-    ///  attackCoolTime 값 재정의 할 것
-    /// </summary>
-    public abstract void CoolTime();
-
-
-
-    /// <summary>
     /// 공격 방법 정의
     /// player.Damage()
     /// </summary>
     public abstract void Attack();
+
+    /// <summary>
+    /// 피해량
+    /// </summary>
+    public void Damage(float damage)
+    {
+        // player.Damage(damage);
+    }
 }

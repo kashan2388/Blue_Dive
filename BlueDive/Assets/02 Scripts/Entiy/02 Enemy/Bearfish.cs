@@ -5,9 +5,7 @@ using UnityEngine;
 public class Bearfish : Enemy
 {
     // 큰 이빨 곰치
-    [SerializeField] public float damage = 20.0f;   // 데미지
-    [SerializeField] public float coolTime = 1.0f;  // 공격 쿨타임   // 필요한가?
-    [SerializeField] WaitForSeconds warningTime = new WaitForSeconds(1.0f);  // 경고 시간
+    [SerializeField] public WaitForSeconds warningTime = new WaitForSeconds(1.0f);  // 경고 시간
     [SerializeField] public GameObject warningBlock;    // 경고 블록
 
     public override void Attack()
@@ -26,12 +24,7 @@ public class Bearfish : Enemy
 
         if (target != null)
         {
-            // Player.Instance.Damage(damage);
+            Damage(damage);
         }
-    }
-
-    public override void CoolTime()
-    {
-        attackCoolTime = coolTime;
     }
 }

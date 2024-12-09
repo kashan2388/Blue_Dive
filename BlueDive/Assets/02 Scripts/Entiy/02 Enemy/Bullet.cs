@@ -6,34 +6,43 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     // 일반 발사체
-    private float damage = 0;          // 피해량
-    private float speed = 0;           // 발사체 속도
-    private bool penetrating = false;  // 벽 관통여부
+    protected Vector3 target;
+    protected float damage = 0;             // 피해량
+    protected float speed = 0;              // 발사체 속도
+    protected float range = 0;              // 사거리
+    protected bool penetrating = false;     // 벽 관통여부
 
-    private Transform target;
-
+    protected Vector3 startVector;
+    protected Vector3 goal;
+    protected void Start()
+    {
+        startVector = transform.parent.transform.position;
+    }
     protected virtual void Update()
     {
         // 자신의 위치에서 대상까지 일정한 속도로 이동
-        transform.position = Vector2.MoveTowards(transform.position, target.position, speed);
+        transform.position = Vector2.MoveTowards(startVector, goal, speed);
 
         // 목표위치 도달 시 소멸
-        if(transform.position == target.position)
+        if(transform.position == target)
         {
             Destroy(gameObject);
         }
     }
 
-    public void Shot(Transform target, float damage, float speed, bool penetrating)
+    public void Information(Vector3 target, float damage, float speed, float range, bool penetrating)
     {
         this.target = target;
         this.damage = damage;
         this.speed = speed;
+        this.range = range;
         this.penetrating = penetrating;
+        
+        goal = (startVector - target).normalized * range;
     }
 
     // 관통여부에 따라 닿을경우 소멸
-    protected void OnTriggerEnter2D(Collider2D collision)
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Player")
         {
@@ -51,7 +60,12 @@ public class Bullet : MonoBehaviour
     /// </summary>
     protected virtual void Attack()
     {
-        // Player.Instance.Damage(damage);
+        Damage(damage);
         Destroy(gameObject);
+    }
+
+    public void Damage(float damage)
+    {
+        // Player.Instance.Damage(damage);
     }
 }
