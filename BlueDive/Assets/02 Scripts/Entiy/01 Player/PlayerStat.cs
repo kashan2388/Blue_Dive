@@ -4,78 +4,60 @@ using UnityEngine;
 
 public class PlayerStat 
 {
-    public enum StatType { HP, Stamina, Gravity, JumpForce, Speed }
-
-
-    private readonly int maxHp = 5;
-    private readonly int maxStamina = 30;
+    private readonly int maxHp = 100;
     private readonly float maxGravity = 9.8f;
     private readonly float minGravity = -9.8f;
-    private readonly float jumpForce = 2f;
     private readonly float maxSpeed = 5f;
+    private readonly float maxHookMoveSpeed = 15f;
+    private readonly float defaultGravity = 0.1f;
 
     private int currentHP;
-    private int currentStamina;
     private float currentGravity;
-    private float currentJumpForce;
     private float currentSpeed;
-
-
-    public PlayerStat()
-    {
-        InitializeStat();
-    }
+    private float currentHookMoveSpeed;
+    
+    public PlayerStat() => InitializeStat();
 
     public void InitializeStat()
     {
         currentHP = maxHp;
-        currentStamina = maxStamina;
-        currentGravity = maxGravity;
-        currentJumpForce = jumpForce;
+        currentGravity = defaultGravity;
         currentSpeed = maxSpeed;
+        currentHookMoveSpeed = maxHookMoveSpeed;
     }
 
+    public int MaxHP => maxHp;
     public int CurrentHP => currentHP;
-    public int CurrentStamina => currentStamina;
-    public float CurrentGravity => currentGravity;
+    public float DefaultGravity => defaultGravity;
+    public float CurrentGravity
+    {
+        get => currentGravity;
+        set => currentGravity = Mathf.Clamp(value, minGravity, maxGravity);
+    }
 
-    public float CurrentJumpForce => currentJumpForce;
-    public float CurrentSpeed => currentSpeed;
+    public float CurrentSpeed
+    {
+        get => currentSpeed;
+        set => currentSpeed = Mathf.Clamp(value, 0f, maxSpeed);
+    }
+    public float CurrentHookMoveSpeed => currentHookMoveSpeed;
 
 
     #region HP 스탯 관련 
     public void TakeDamage(int damage)
     {
-        currentHP -= damage;
-        if (currentHP <= 0) currentHP = 0;
+        currentHP = Mathf.Max(currentHP - damage, 0);
     }
 
     public void RecoverHP(int amount)
     {
-        currentHP += amount;
-        if(currentHP >= maxHp) currentHP = maxHp;
+        currentHP = Mathf.Min(currentHP + amount, maxHp);
     }
-    #endregion
-
-    #region 스태미나 스탯 관련 
-
-    public void ConsumeStamina(int amount)
+    public void ConsumeHP(int amount)
     {
-        currentStamina = Mathf.Max(CurrentStamina - amount, 0);
-
+        currentHP = Mathf.Max(currentHP - amount, 0);
     }
-    public void RecoverStamina(int amount)
-    {
-        currentStamina = Mathf.Min(currentStamina + amount, maxStamina);
-    }
-
 
     #endregion
-
-    // 중력 전환
-    public void ToggleGravity()
-    {
-        currentGravity = currentGravity == maxGravity ? minGravity : maxGravity; 
-    }
 
 }
