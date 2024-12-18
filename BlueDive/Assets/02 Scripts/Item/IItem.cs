@@ -6,5 +6,5 @@ public interface IItem
 {
     void Use();
     string GetItemName();
-    string GetDescription();
+
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HealthItem : MonoBehaviour, IItem
 {
-    [SerializeField] private string itemName = "Health Item";
+    [SerializeField] private string itemName = "HeaItem";
     [SerializeField] private string description = "플레이어의 산소를 회복시킨다. ";
     [SerializeField] private int recoverAmount = 50;
 
