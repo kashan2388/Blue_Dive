@@ -8,7 +8,7 @@ public class RangeDetection : MonoBehaviour
 
     private void Start()
     {
-        enemy = gameObject.GetComponent<Enemy>();
+        enemy = transform.parent.GetComponent<Enemy>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -24,12 +24,13 @@ public class SelfDestruct : Enemy
             Damage(damage);
         }
 
-        Destroy(this);
+        Destroy(gameObject);
     }
 
     private float Distance()
     {
         float distance = Vector2.Distance(Player.Instance.transform.position, transform.position);
+        // 플레이어 추가 후 확인해볼것
 
         return distance;
     }

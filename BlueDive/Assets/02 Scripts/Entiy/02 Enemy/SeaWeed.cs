@@ -22,8 +22,8 @@ public class SeaWeed : MonoBehaviour
     private void OnTriggerExit2D(Collider2D collision)
     {
         Player player = collision.GetComponent<Player>();
-
-        if(player != null)
+        
+        if (player != null)
         {
             // 플레이어 속도 복구
             // player.Speed(1);

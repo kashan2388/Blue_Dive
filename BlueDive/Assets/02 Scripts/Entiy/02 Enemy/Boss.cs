@@ -107,15 +107,14 @@ public class Boss : MonoBehaviour
     {
         attack2.transform.position = transform.position - new Vector3(0, 5);    // 보스보다 밑에서 소환
         attack2.SetActive(true);
-        // 플레이어 대상 공격 실행
-        // attack2.GetComponent<BossAttack2>().Attack(durationTime);
+        attack2.GetComponent<BossAttack2>().Attack(durationTime);
     }
 
     public void Attack3()   // 강력 물대포
     {
+        attack3.transform.position = Vector3.zero;
         attack3.SetActive(true);
-        // 플레이어 대상 공격 실행
-        // attack3.GetComponent<BossAttack3>().Attack(durationTime);
+        attack3.GetComponent<BossAttack3>().Attack(durationTime);
     }
 
 

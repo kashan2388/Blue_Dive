@@ -5,12 +5,12 @@ using UnityEngine;
 
 public abstract class Enemy : MonoBehaviour
 {
-    [SerializeField] public float damage = 0;                       // 데미지
-    [SerializeField] public float attackCoolTime = float.MaxValue;  // 초당 공격 횟수
+    [SerializeField] public int damage = 0;                         // 데미지
+    [SerializeField] public float attackCoolTime = 0.001f;  // 초당 공격 횟수
     [SerializeField] public bool isPlaying = false;                 // 활성화 여부
     [SerializeField] public bool isAttack = true;                   // 공격 여부
 
-    protected Transform target = null;                                 // 대상 위치
+    protected Transform target = null;                              // 대상 위치
 
 
     protected virtual void Update()
@@ -30,7 +30,7 @@ public abstract class Enemy : MonoBehaviour
     }
 
     // 공격 쿨타임
-    IEnumerator IECoolTime()
+    protected IEnumerator IECoolTime()
     {
         isAttack = false;
         float time = 1.00f / attackCoolTime;
@@ -46,15 +46,15 @@ public abstract class Enemy : MonoBehaviour
 
     /// <summary>
     /// 공격 방법 정의
-    /// player.Damage()
     /// </summary>
     public abstract void Attack();
 
     /// <summary>
     /// 피해량
     /// </summary>
-    public void Damage(float damage)
+    public void Damage(int damage)
     {
-        // player.Damage(damage);
+        // Player.Instance.playerStat.TakeDamage(damage);  // ?
+        Debug.Log("피해입힘");
     }
 }
